@@ -23,15 +23,15 @@ VUE_APP_HOST_URL=https://example.com/ # 提供主站和Admin的跳转
 
 ## 相关项目
 
-[online-judge](https://github.com/caiyexiang/online-judge)
+[online-judge-frontend](https://github.com/caiyexiang/online-judge-frontend)
 
-[online-judge-admin](https://github.com/caiyexiang/online-judge-admin)
+[online-judge-frontend-admin](https://github.com/caiyexiang/online-judge-frontend-admin)
 
 ## 在线预览
 
-[online-judge](https://caiyexiang.com:8848)
+[online-judge-frontend](https://caiyexiang.com:8848)
 
-[online-judge-admin](https://caiyexiang.com:8848/admin/)
+[online-judge-frontend-admin](https://caiyexiang.com:8848/admin/)
 
 ## TODO
 
