@@ -56,9 +56,9 @@ export default {
       this.loading = true
       const { permission } = await this.$store.dispatch('user/login', this.form)
       if (permission === 3) {
-        window.location = `${process.env.VUE_APP_HOST_URL}admin/`
-      } else {
         this.$router.push('/')
+      } else {
+        window.location = `${process.env.VUE_APP_HOST_URL}admin/`
       }
       this.loading = false
     },
