@@ -140,6 +140,8 @@ export default {
   z-index: 20;
   padding-bottom: 10px;
   box-shadow: 0 15px 10px -15px gray;
+  display: flex;
+  justify-content: space-between;
 }
 .refresh-button {
   margin-left: 10px;

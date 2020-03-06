@@ -1,5 +1,8 @@
 <template>
   <div>
+    <div class="refresh-btn-container">
+      <el-button class="refresh-button" icon="el-icon-refresh-right" :disabled="disabled" circle @click="getTable" />
+    </div>
     <div v-if="user_rank" style="margin-bottom: 10px">
       <el-table
         :data="user_rank"
@@ -130,7 +133,7 @@ export default {
       this.loading = true
       getRank(this.id, this.pageQuery).then(res => {
         this.total = res.count
-        this.table = res.result.rank
+        this.table = res.results.rank
         this.loading = false
         this.user_rank = [res.result.user_rank]
       })
@@ -167,6 +170,11 @@ export default {
 </style>
 
 <style>
+.refresh-btn-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 5px;
+}
 .success-row {
   background-color: #f0f9eb !important;
 }

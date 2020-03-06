@@ -67,9 +67,12 @@
         {{ contest.description }}
       </div>
     </el-dialog>
-    <el-dialog title="测验状态" :visible.sync="dialogVisible.status" width="80%">
-      <ContestStatus />
-    </el-dialog>
+    <!-- fix20200304: 修复dialog打开不刷新的情况 -->
+    <div v-if="dialogVisible.status">
+      <el-dialog title="测验状态" :visible.sync="dialogVisible.status" width="80%">
+        <ContestStatus />
+      </el-dialog>
+    </div>
   </div>
 </template>
 
@@ -319,7 +322,6 @@ export default {
       this.dialogVisible[name] = true
     },
     updateAnswer(answer) {
-      console.log('Contest接收答案:', answer)
       this.problems[this.currentType][this.currentIndex].answer = answer
       if (this.currentType === 3) {
         this.problems[this.currentType][this.currentIndex].change = true
@@ -328,7 +330,8 @@ export default {
     startTimer() {
       const dn = new Date(this.contest.now_time)
       const de = new Date(this.contest.end_time)
-      let dur = de - dn
+      // fix20200304: date的时间差应该除以1000转化为秒
+      let dur = Math.floor((de - dn) / 1000)
       if (dur < 0) {
         this.finished = true
         this.displayTime = `结束时间:${parseTime(de)}`
