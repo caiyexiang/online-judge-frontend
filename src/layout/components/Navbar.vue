@@ -73,7 +73,7 @@ export default {
       this.$router.push(`/login`)
     },
     openAdmin() {
-      window.location = `${process.env.VUE_APP_HOST_URL}admin/`
+      window.location = `${document.location.protocol}//${document.location.host}/admin/`
     },
   },
 }

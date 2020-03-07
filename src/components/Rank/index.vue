@@ -131,11 +131,11 @@ export default {
     },
     getTable() {
       this.loading = true
-      getRank(this.id, this.pageQuery).then(res => {
-        this.total = res.count
-        this.table = res.results.rank
+      getRank(this.id, this.pageQuery).then(({ count, results }) => {
+        this.total = count
+        this.table = results.rank
         this.loading = false
-        this.user_rank = [res.result.user_rank]
+        this.user_rank = [results.user_rank]
       })
     },
     cellStyle({ row, column, rowIndex, columnIndex }) {

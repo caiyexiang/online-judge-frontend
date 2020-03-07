@@ -58,7 +58,7 @@ export default {
       if (permission === 3) {
         this.$router.push('/')
       } else {
-        window.location = `${process.env.VUE_APP_HOST_URL}admin/`
+        window.location = `${document.location.protocol}//${document.location.host}/admin/`
       }
       this.loading = false
     },
