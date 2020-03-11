@@ -19,6 +19,7 @@
 
 <script>
 import formMixin from '@/mixins/formMixin.js'
+import { setLocalStorage } from '@/utils/storage'
 import { isLegalUsername } from '@/utils/validator'
 export default {
   mixins: [formMixin],
@@ -54,10 +55,15 @@ export default {
   methods: {
     async submitData() {
       this.loading = true
-      const { permission } = await this.$store.dispatch('user/login', this.form)
+      const { permission, last_log } = await this.$store.dispatch('user/login', this.form)
       if (permission === 3) {
         this.$router.push('/')
       } else {
+        /**
+         * 跨页面缓存登陆日志，登陆后后台查看
+         */
+        setLocalStorage('last_login_time', last_log ? last_log.last_login_time : '')
+        setLocalStorage('last_login_ip', last_log ? last_log.last_login_ip : '')
         window.location = `${document.location.protocol}//${document.location.host}/admin/`
       }
       this.loading = false

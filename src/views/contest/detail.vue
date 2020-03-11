@@ -215,7 +215,15 @@ export default {
       this.problems = res.problem_json
       this.maxScore = res.problem_score_json
       for (const type of this.types) {
-        for (const problem of this.problems[type]) {
+        for (let index = 0; index < this.problems[type].length; index++) {
+          const problem = this.problems[type][index]
+          // 如果问题被删除, 从数组中移除这个问题，并且index自减
+          if (problem.deleted) {
+            this.problems[type].splice(index, 1)
+            problem = null
+            index--
+            continue
+          }
           problem.maxScore = this.maxScore[type][problem.id]
           if (type === CHOICE || type === FILLIN) {
             problem.answer = []
