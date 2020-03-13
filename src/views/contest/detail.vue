@@ -93,6 +93,7 @@ import {
   getCodeSubmission,
   getQASubmission,
   createContestSubmission,
+  updateContestSubmission,
 } from '@/api/contest'
 const { CODING, CHOICE, FILLIN, CODEFILL, QA } = PROBLEM_ENUM
 const type2component = {
@@ -190,6 +191,9 @@ export default {
     },
     disableNext() {
       return this.currentIndex === this.problems[this.currentType].length - 1
+    },
+    submissionApi() {
+      return this.submissionId ? updateContestSubmission(this.submissionId) : createContestSubmission
     },
   },
   methods: {
@@ -318,7 +322,7 @@ export default {
       submission.choice_submission = JSON.stringify(submission.choice_submission)
       submission.fill_in_submission = JSON.stringify(submission.fill_in_submission)
       try {
-        const { id } = await createContestSubmission(submission)
+        const { id } = await this.submissionApi(submission)
         this.$message.success('提交成功')
         this.submissionId = id
       } catch (err) {

@@ -5,7 +5,7 @@
         我的班级
       </div>
     </div>
-    <div class="container">
+    <div class="container" v-loading="loading">
       <el-row :gutter="20">
         <el-col :md="12" :lg="6" v-for="item of list" :key="item.id" style="margin-bottom:10px">
           <el-card>
@@ -32,6 +32,7 @@ export default {
   data() {
     return {
       list: [],
+      loading: false,
     }
   },
   filters: {
@@ -50,7 +51,9 @@ export default {
   },
   methods: {
     getGroups() {
+      this.loading = true
       getGroups().then(({ results }) => {
+        this.loading = false
         this.list = results
       })
     },
