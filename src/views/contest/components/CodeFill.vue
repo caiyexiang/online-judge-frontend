@@ -50,6 +50,15 @@ export default {
   render() {
     const codeTemplateList = this.problem.code_template.split(fillRegEx)
     const codeElement = []
+    const scoreElement = () => {
+      if (this.problem.score !== undefined) {
+        return (
+          <span>
+            <el-tag>得分: {this.problem.score}</el-tag>
+          </span>
+        )
+      }
+    }
     for (let i = 0; i < codeTemplateList.length; i++) {
       codeElement.push(
         <CodeMirror
@@ -68,12 +77,7 @@ export default {
     return (
       <div>
         <h3>
-          {this.problem.score && (
-            <span>
-              <el-tag>得分: {this.problem.score}</el-tag>
-            </span>
-          )}
-          【{this.problem.maxScore}分】 {this.problem.title}
+          {scoreElement()}【{this.problem.maxScore}分】 {this.problem.title}
         </h3>
         <el-card shadow="never">
           <div slot="header">

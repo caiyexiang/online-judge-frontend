@@ -1,7 +1,7 @@
 <template>
   <div>
     <h3 class="problem-title">
-      <span v-if="problem.score === undefined">
+      <span v-if="problem.score !== undefined">
         <el-tag>得分: {{ problem.score }}</el-tag>
       </span>
       【{{ problem.maxScore }}分】

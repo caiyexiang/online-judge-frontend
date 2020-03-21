@@ -44,7 +44,13 @@
       size="small"
     >
       <el-table-column align="center" label="排名" type="index" width="80" />
-      <el-table-column align="center" label="用户名" prop="user.username" width="120" />
+      <el-table-column align="center" label="用户名" prop="user.username" width="120">
+        <template slot-scope="{ row }">
+          <div class="pointer" @click="handleGoSubmission(row)">
+            {{ row.user.username }}
+          </div>
+        </template>
+      </el-table-column>
       <el-table-column align="center" label="总分数" prop="score" width="80" />
       <el-table-column align="center" label="总用时" prop="penalty" width="100">
         <template slot-scope="{ row }">
@@ -98,6 +104,7 @@ export default {
       table: [],
       user_rank: undefined,
       total: 0,
+      disabled: false,
       pageQuery: {
         offset: 0,
         limit: 10,
@@ -135,7 +142,7 @@ export default {
         this.total = count
         this.table = results.rank
         this.loading = false
-        this.user_rank = [results.user_rank]
+        this.user_rank = results.user_rank && [results.user_rank]
       })
     },
     cellStyle({ row, column, rowIndex, columnIndex }) {
@@ -149,6 +156,9 @@ export default {
     },
     tableRowClassName({ row, rowIndex }) {
       return 'success-row'
+    },
+    handleGoSubmission({ user: { username } }) {
+      this.$emit('go-submission', username)
     },
   },
 }

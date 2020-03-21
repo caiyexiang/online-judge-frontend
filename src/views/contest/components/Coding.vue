@@ -13,7 +13,7 @@
         <p v-html="problem.description" />
       </div>
     </el-card>
-    <el-card v-if="problem.hint" shadow="never">
+    <el-card shadow="never">
       <div slot="header">
         <span>提示</span>
       </div>
@@ -23,11 +23,26 @@
     </el-card>
     <el-card shadow="never">
       <div slot="header">
+        <span>输入</span>
+      </div>
+      <div class="text-wrapper">
+        <p v-html="problem.input" />
+      </div>
+    </el-card>
+    <el-card shadow="never">
+      <div slot="header">
+        <span>输出</span>
+      </div>
+      <div class="text-wrapper">
+        <p v-html="problem.output" />
+      </div>
+    </el-card>
+    <el-card shadow="never">
+      <div slot="header">
         <span>示例输入</span>
       </div>
       <div class="text-wrapper">
-        <!-- fix20200304: 修复了pre标签内存在标签括号的自动转义 -->
-        <p v-html="$options.filters.sampleFilter(problem.sample_input_json)" />
+        <pre>{{ problem.sample_input_json | sampleFilter }}</pre>
       </div>
     </el-card>
     <el-card shadow="never">
@@ -35,7 +50,7 @@
         <span>示例输出</span>
       </div>
       <div class="text-wrapper">
-        <p v-html="$options.filters.sampleFilter(problem.sample_output_json)" />
+        <pre>{{ problem.sample_output_json | sampleFilter }}</pre>
       </div>
     </el-card>
     <CodeMirror v-model="answer" :language.sync="language" />
@@ -66,7 +81,7 @@ export default {
   },
   filters: {
     sampleFilter(sample) {
-      return sample && sample.join('')
+      return sample ? sample.join('\n') : ''
     },
   },
   data() {

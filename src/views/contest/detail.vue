@@ -244,11 +244,13 @@ export default {
               const scoreObj = this.score[QA][problem.id]
               const submissionId = Object.keys(scoreObj)[0]
               const score = scoreObj[submissionId]
-              const { answer, comment } = await getQASubmission(submissionId)
-              problem.answer = answer
+              if (submissionId !== '-1') {
+                const { answer, comment } = await getQASubmission(submissionId)
+                problem.answer = answer
+                problem.comment = comment
+              }
               if (this.judged) {
                 problem.score = score
-                problem.comment = comment
               }
             }
           } else if (type === CODING || type === CODEFILL) {

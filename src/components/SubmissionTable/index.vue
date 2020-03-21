@@ -1,6 +1,25 @@
 <template>
   <div>
-    <div class="title-container sticky-header">
+    <div class="sticky-header filter-container" v-if="this.$route.name === 'ContestDetail'">
+      <el-select class="filter-item" v-model="type" @change="getSubmissions" style="width:400px;">
+        <el-option value="编程题">编程题</el-option>
+        <el-option value="代码补全题">代码补全题</el-option>
+      </el-select>
+      <el-select class="filter-item" v-model="filterQuery.status" style="width:500px;">
+        <el-option value="" label="全部提交" />
+        <el-option value="Accepted" label="仅限通过的提交" />
+      </el-select>
+      <el-input class="filter-item" v-model="filterQuery.problem" placeholder="问题ID" />
+      <el-input class="filter-item" v-model="filterQuery.search" placeholder="用户名" />
+      <el-button
+        class="refresh-button filter-item"
+        icon="el-icon-refresh-right"
+        :disabled="disabled"
+        circle
+        @click="getSubmissions"
+      />
+    </div>
+    <div class="title-container sticky-header" v-else>
       <el-radio-group v-model="type" @change="getSubmissions">
         <el-radio-button label="编程题" />
         <el-radio-button label="代码补全题" />
@@ -62,6 +81,10 @@ export default {
       type: Object,
       default: null,
     },
+    query: {
+      type: Object,
+      default: null,
+    },
   },
   filters: {
     parseTime,
@@ -78,6 +101,11 @@ export default {
       limit: 10,
       total: 0,
       loading: false,
+      filterQuery: {
+        problem: '',
+        status: '',
+        search: '',
+      },
       fetchApi: {
         编程题: getCodeSubmissions,
         代码补全题: getCodeFillSubmissions,
@@ -98,8 +126,19 @@ export default {
       },
     },
   },
-  created() {
-    this.getSubmissions()
+  watch: {
+    filterQuery: {
+      handler() {
+        this.getSubmissions()
+      },
+      deep: true,
+    },
+    query: {
+      handler() {
+        this.filterQuery = { ...this.filterQuery, ...this.query }
+      },
+      immediate: true,
+    },
   },
   methods: {
     getSubmissions() {
@@ -108,6 +147,7 @@ export default {
         offset: this.offset,
         limit: this.limit,
         ...this.params,
+        ...this.filterQuery,
       }
       this.loading = true
       this.fetchApi[this.type](params).then(({ count, results }) => {
@@ -140,10 +180,13 @@ export default {
   z-index: 20;
   padding-bottom: 10px;
   box-shadow: 0 15px 10px -15px gray;
-  display: flex;
   justify-content: space-between;
+  display: flex;
+  background: white;
+  display: flex;
+  align-items: center;
 }
-.refresh-button {
-  margin-left: 10px;
+.title-container {
+  justify-content: space-between;
 }
 </style>
