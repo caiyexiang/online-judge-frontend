@@ -57,7 +57,7 @@ export default {
   components: { BackBtn },
   filters: {
     judgedFilter(judged) {
-      return judged ? '未评分' : '已评分'
+      return judged ? '已评分' : '未评分'
     },
   },
   data() {

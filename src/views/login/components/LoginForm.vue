@@ -59,11 +59,6 @@ export default {
       if (permission === 3) {
         this.$router.push('/')
       } else {
-        /**
-         * 跨页面缓存登陆日志，登陆后后台查看
-         */
-        setLocalStorage('last_login_time', last_log ? last_log.last_login_time : '')
-        setLocalStorage('last_login_ip', last_log ? last_log.last_login_ip : '')
         window.location = `${document.location.protocol}//${document.location.host}/admin/`
       }
       this.loading = false

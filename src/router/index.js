@@ -74,6 +74,7 @@ export const asyncRoutes = [
 export const constantRoutes = [
   {
     path: '/login',
+    name: 'Login',
     component: () => import('@/views/login/index'),
     title: '登录',
     hidden: true,

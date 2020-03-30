@@ -27,7 +27,12 @@
       <el-card shadow="never">
         <pre>{{ result.output }}</pre>
       </el-card>
-      <p>代码：</p>
+      <p class="code-bar">
+        代码：
+        <el-button type="success" size="mini" icon="el-icon-document" @click="handleCopy(result.code, $event)">
+          复制代码
+        </el-button>
+      </p>
       <CodeMirror
         :value="result.code"
         :language="result.language"
@@ -40,6 +45,7 @@
 </template>
 
 <script>
+import clip from '@/utils/clipboard.js'
 import CodeMirror from '@/components/CodeMirror'
 import { parseTime } from '@/utils'
 import { getCodeSubmission, getCodeFillSubmission } from '@/api/contest'
@@ -76,6 +82,9 @@ export default {
         this.result = res
       })
     },
+    handleCopy(text, event) {
+      clip(text, event)
+    },
   },
 }
 </script>
@@ -100,5 +109,10 @@ export default {
       }
     }
   }
+}
+
+.code-bar {
+  display: flex;
+  justify-content: space-between;
 }
 </style>

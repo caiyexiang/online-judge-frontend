@@ -58,6 +58,9 @@ export default {
       } catch (err) {
         this.loading = false
         this.handleError(err)
+        if (this.$route.name === 'Login') {
+          this.$message.error(`多次登陆失败会锁定账号5分钟`)
+        }
       }
     },
   },

@@ -7,9 +7,6 @@
     </header>
     <main>
       <el-card id="announcement">
-        <div slot="header">
-          <span>公告栏</span>
-        </div>
         <Announcement />
       </el-card>
       <el-card id="login-form">

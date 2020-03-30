@@ -32,7 +32,7 @@ const handleResponseError = error => {
   } else if (status === '403') {
     const detail = data ? data.detail : undefined
     // 未登陆或者cookies过期
-    if (detail === 'Authentication credentials were not provided') {
+    if (detail === 'Authentication credentials were not provided.') {
       store.dispatch('user/resetInfo').then(() => {
         location.reload()
       })
@@ -48,8 +48,9 @@ const handleResponseError = error => {
           location.reload()
         })
       })
+    } else {
+      Message({ message: '无权访问', type: 'error' })
     }
-    Message({ message: '无权访问', type: 'error' })
     return Promise.reject(new Error(detail || '403_NOT_AUTH'))
   } else if (status === '400') {
     Object.keys(data).forEach(key => {

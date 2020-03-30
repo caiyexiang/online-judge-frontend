@@ -40,8 +40,8 @@ router.beforeEach(async (to, from, next) => {
           next({ ...to, replace: true })
         } catch (error) {
           // remove login flag and go to login page to re-login
+          // 这一步只是保持完整性，因为在无cookie的情况下访问api，会先一步被清除用户信息和重定位到登录页
           await store.dispatch('user/resetInfo')
-          Message.error('缺少访问权限')
           console.error(error)
           next(`/login`)
           NProgress.done()
