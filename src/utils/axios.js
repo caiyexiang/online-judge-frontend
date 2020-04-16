@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { MessageBox, Message } from 'element-ui'
+import { getCookie } from '@/utils/storage'
 import { FormError } from './error'
 import store from '@/store'
 
@@ -13,10 +14,15 @@ const service = axios.create(config)
 
 let tictoc = false // 由于element-ui 表单验证是使用watch监听,如果错误提示字符串不变,它不会再次提醒错误,所以设置标志位
 
-service.interceptors.request.use(
-  request => request,
-  error => Promise.reject(error),
-)
+const handleRequest = request => {
+  if (request.method !== 'get') {
+    const token = getCookie('csrftoken')
+    token && (request.headers['x-csrftoken'] = token)
+  }
+  return request
+}
+
+service.interceptors.request.use(handleRequest, error => Promise.reject(error))
 
 const handleResponseError = error => {
   const { response = {} } = error
