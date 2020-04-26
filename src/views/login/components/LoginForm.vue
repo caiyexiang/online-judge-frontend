@@ -19,7 +19,6 @@
 
 <script>
 import formMixin from '@/mixins/formMixin.js'
-import { setLocalStorage } from '@/utils/storage'
 import { isLegalUsername } from '@/utils/validator'
 export default {
   mixins: [formMixin],
@@ -55,7 +54,7 @@ export default {
   methods: {
     async submitData() {
       this.loading = true
-      const { permission, last_log } = await this.$store.dispatch('user/login', this.form)
+      const { permission } = await this.$store.dispatch('user/login', this.form)
       if (permission === 3) {
         this.$router.push('/')
       } else {
