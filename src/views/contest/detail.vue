@@ -67,7 +67,6 @@
         {{ contest.description }}
       </div>
     </el-dialog>
-    <!-- fix20200304: 修复dialog打开不刷新的情况 -->
     <div v-if="dialogVisible.status">
       <el-dialog title="测验状态" :visible.sync="dialogVisible.status" width="80%">
         <ContestStatus />
@@ -228,6 +227,7 @@ export default {
             index--
             continue
           }
+          problem.index = index
           problem.maxScore = this.maxScore[type][problem.id]
           if (type === CHOICE || type === FILLIN) {
             problem.answer = []

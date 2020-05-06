@@ -22,7 +22,9 @@ export default {
   render(createElement) {
     const h = createElement
     const strList = this.problem.description.split(fillRegEx)
-    const elements = [h('span', { style: { fontSize: '1.2em' } }, [`【${this.problem.maxScore}分】`])]
+    const elements = [
+      h('span', { style: { fontSize: '1.2em' } }, [`【${this.problem.maxScore}分】${this.problem.index + 1}. `]),
+    ]
     if (this.problem.score !== undefined) {
       elements.unshift(h('el-tag', [`得分：${this.problem.score}`]))
     }

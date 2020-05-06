@@ -4,7 +4,7 @@
       <span v-if="problem.score !== undefined">
         <el-tag>得分：{{ problem.score }}</el-tag>
       </span>
-      【{{ problem.maxScore }}分】{{ problem.description }}
+      【{{ problem.maxScore }}分】{{ problem.index + 1 }}. {{ problem.description }}
     </div>
     <div>
       <el-checkbox-group v-if="problem.multiple" v-model="answer" @change="updateAnswer">

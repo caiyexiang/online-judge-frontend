@@ -4,7 +4,7 @@
       <span v-if="problem.score !== undefined">
         <el-tag>得分: {{ problem.score }}</el-tag>
       </span>
-      【{{ problem.maxScore }}分】
+      【{{ problem.maxScore }}分】{{ problem.index + 1 }}.
     </h3>
     <el-card shadow="never">
       <div slot="header">

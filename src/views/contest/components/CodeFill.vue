@@ -77,7 +77,7 @@ export default {
     return (
       <div>
         <h3>
-          {scoreElement()}【{this.problem.maxScore}分】 {this.problem.title}
+          {scoreElement()}【{this.problem.maxScore}分】{this.problem.index + 1}. {this.problem.title}
         </h3>
         <el-card shadow="never">
           <div slot="header">
