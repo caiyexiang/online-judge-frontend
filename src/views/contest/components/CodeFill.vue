@@ -7,9 +7,7 @@ export default {
   props: {
     problem: {
       type: Object,
-      default: () => {
-        return {}
-      },
+      default: () => Object.create(null),
     },
   },
   data() {
@@ -46,6 +44,9 @@ export default {
         console.error(e)
       }
     },
+    updateAnswer() {
+      this.$emit('updateAnswer', this.answer)
+    },
   },
   render() {
     const codeTemplateList = this.problem.code_template.split(fillRegEx)
@@ -71,7 +72,14 @@ export default {
         />,
       )
       if (i !== codeTemplateList.length - 1) {
-        codeElement.push(<CodeMirror vModel={this.answer[i]} language={this.problem.language} show-language={false} />)
+        codeElement.push(
+          <CodeMirror
+            vModel={this.answer[i]}
+            language={this.problem.language}
+            show-language={false}
+            vOn:updateValue={this.updateAnswer}
+          />,
+        )
       }
     }
     return (

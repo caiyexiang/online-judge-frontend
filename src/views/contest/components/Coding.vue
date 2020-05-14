@@ -53,7 +53,7 @@
         <pre>{{ problem.sample_output_json | sampleFilter }}</pre>
       </div>
     </el-card>
-    <CodeMirror v-model="answer" :language.sync="language" />
+    <CodeMirror v-model="answer" :language.sync="language" @updateValue="updateAnswer" />
     <CodeBtn @click="createCodeSubmission" :disabled="finished" />
   </div>
 </template>
@@ -70,9 +70,7 @@ export default {
   props: {
     problem: {
       type: Object,
-      default: () => {
-        return {}
-      },
+      default: () => Object.create(null),
     },
     finished: {
       type: Boolean,
@@ -91,6 +89,9 @@ export default {
     }
   },
   methods: {
+    updateAnswer() {
+      this.$emit('updateAnswer', this.answer)
+    },
     createCodeSubmission() {
       if (!this.answer.length) {
         this.$message.error('代码不能为空')

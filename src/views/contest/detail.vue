@@ -76,12 +76,8 @@
 </template>
 
 <script>
-import ContestStatus from './components/ContestStatus'
-import Coding from './components/Coding'
-import Choice from './components/Choice'
-import FillIn from './components/FillIn'
-import CodeFill from './components/CodeFill'
-import Qa from './components/QA'
+import { mapGetters } from 'vuex'
+import { CodeFill, Choice, Coding, FillIn, Qa, ContestStatus } from './components'
 import { PROBLEM_ENUM, PROBLEM_TYPE_CN } from '@/utils/constant.js'
 import { getDefaultProblem, parseTime, parseSeconds } from '@/utils'
 import {
@@ -94,6 +90,7 @@ import {
   createContestSubmission,
   updateContestSubmission,
 } from '@/api/contest'
+import { getLocalStorage, removeLocalStorage, setLocalStorage } from '../../utils/storage'
 const { CODING, CHOICE, FILLIN, CODEFILL, QA } = PROBLEM_ENUM
 const type2component = {
   [CODING]: 'Coding',
@@ -122,6 +119,7 @@ export default {
       submissionId: 0,
       timer: null,
       loading: false,
+      saving: false,
       finished: false,
       judged: false,
       displayTime: '00:00:00',
@@ -140,6 +138,7 @@ export default {
         description: '',
       },
       submission: [],
+      localAnswer: getDefaultProblem(),
       score: [],
       // 决定题目顺序，这里是选择/填空/问答/代码补全/代码
       // 1 2 3 4 0
@@ -168,7 +167,6 @@ export default {
       this.$message.error('获取数据错误')
       console.error(e)
     }
-    this.startTimer()
   },
   beforeDestroy() {
     if (this.timer) {
@@ -176,6 +174,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['userid']),
     currentProblem() {
       return this.problems[this.currentType][this.currentIndex]
     },
@@ -196,6 +195,17 @@ export default {
     },
   },
   methods: {
+    checkLocalStorage() {
+      if (this.finished) {
+        removeLocalStorage(`${this.userid}-${this.id}`)
+        return
+      }
+      const answer = getLocalStorage(`${this.userid}-${this.id}`)
+      if (answer) {
+        this.$message.success('检测到本地缓存中存在答案，已从本地缓存中恢复答案')
+        this.localAnswer = JSON.parse(answer)
+      }
+    },
     async checkContestSubmission() {
       const { count, results } = await checkContestSubmission(this.id)
       if (!count) return
@@ -213,22 +223,22 @@ export default {
       this.score[CODEFILL] = JSON.parse(res.code_fill_score)
     },
     async getContest() {
-      const res = await getContest(this.id)
-      this.contest = res
-      this.problems = res.problem_json
-      this.maxScore = res.problem_score_json
+      const { title, now_time, end_time, description, problem_json, problem_score_json } = await getContest(this.id)
+      this.contest = { title, now_time, end_time, description }
+      this.startTimer()
+      this.checkLocalStorage()
       for (const type of this.types) {
-        for (let index = 0; index < this.problems[type].length; index++) {
-          const problem = this.problems[type][index]
+        for (let index = 0; index < problem_json[type].length; index++) {
+          const problem = problem_json[type][index]
           // 如果问题被删除, 从数组中移除这个问题，并且index自减
           if (problem.deleted) {
-            this.problems[type].splice(index, 1)
+            problem_json[type].splice(index, 1)
             problem = null
             index--
             continue
           }
           problem.index = index
-          problem.maxScore = this.maxScore[type][problem.id]
+          problem.maxScore = problem_score_json[type][problem.id]
           if (type === CHOICE || type === FILLIN) {
             problem.answer = []
             if (this.submissionId) {
@@ -265,8 +275,13 @@ export default {
               }
             }
           }
+          // 从本地缓存中获取答案
+          if (!this.finished && this.localAnswer[type][index]) {
+            problem.answer = this.localAnswer[type][index]
+          }
         }
       }
+      this.problems = problem_json
     },
     plainState(type, index) {
       return this.currentType === type && this.currentIndex === index
@@ -290,7 +305,7 @@ export default {
         .then(() => {
           this.$router.go(-1)
         })
-        .catch(_ => {})
+        .catch()
     },
     async submitSubmission() {
       try {
@@ -336,7 +351,12 @@ export default {
       this.dialogVisible[name] = true
     },
     updateAnswer(answer) {
+      if (this.finished) {
+        return
+      }
       this.problems[this.currentType][this.currentIndex].answer = answer
+      this.localAnswer[this.currentType][this.currentIndex] = answer
+      setLocalStorage(`${this.userid}-${this.id}`, JSON.stringify(this.localAnswer))
       if (this.currentType === 3) {
         this.problems[this.currentType][this.currentIndex].change = true
       }
@@ -344,7 +364,6 @@ export default {
     startTimer() {
       const dn = new Date(this.contest.now_time)
       const de = new Date(this.contest.end_time)
-      // fix20200304: date的时间差应该除以1000转化为秒
       let dur = Math.floor((de - dn) / 1000)
       if (dur < 0) {
         this.finished = true

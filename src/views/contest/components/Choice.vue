@@ -27,9 +27,7 @@ export default {
   props: {
     problem: {
       type: Object,
-      default: () => {
-        return {}
-      },
+      default: () => Object.create(null),
     },
   },
   data() {
