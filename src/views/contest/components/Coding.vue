@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div @click.capture="resultDrawerVisible = false">
     <h3>
       <span v-if="problem.score !== undefined">
         <el-tag>得分: {{ problem.score }}</el-tag> </span
@@ -54,11 +54,27 @@
       </div>
     </el-card>
     <CodeMirror v-model="answer" :language.sync="language" @updateValue="updateAnswer" />
-    <CodeBtn @click="createCodeSubmission" :disabled="finished" />
+    <el-button
+      @click="createCodeSubmission"
+      :disabled="finished"
+      type="primary"
+      style="margin-top:20px"
+      :loading="loading"
+      >提交代码</el-button
+    >
+    <el-button :type="msgType" plain v-show="msg">
+      {{ msg }}
+    </el-button>
+    <el-button type="primary" v-show="result" @click="openSubmission">
+      查看结果
+    </el-button>
   </div>
 </template>
 
 <script>
+import openWindow from '@/utils/open-window'
+import { mapGetters } from 'vuex'
+import { getCodeSubmissions } from '@/api/contest'
 import CodeMirror from '@/components/CodeMirror'
 import CodeBtn from './CodeBtn'
 import { createCodeSubmission } from '@/api/contest'
@@ -86,11 +102,69 @@ export default {
     return {
       language: this.problem.language || 'c',
       answer: this.problem.answer || '',
+      contest: parseInt(this.$route.params.id),
+      result: null,
+      msg: '',
+      loading: false,
     }
+  },
+  computed: {
+    ...mapGetters(['username']),
+    msgType() {
+      if (this.msg === '正在运行...') {
+        return 'info'
+      } else if (this.msg === 'Accepted') {
+        return 'success'
+      } else {
+        return 'danger'
+      }
+    },
   },
   methods: {
     updateAnswer() {
       this.$emit('updateAnswer', this.answer)
+    },
+    pollSubmission() {
+      this.result = null
+      this.msg = '正在运行...'
+      this.loading = true
+      let counter = 0
+      const timer = setInterval(() => {
+        counter++
+        if (counter > 5) {
+          clearInterval(timer)
+          return
+        }
+        const params = {
+          offset: 0,
+          limit: 1,
+          contest: this.contest,
+          problem: this.problem.id,
+          search: this.username,
+        }
+        getCodeSubmissions(params)
+          .then(({ results }) => {
+            const result = results[0]
+            if (result.status !== 'waiting') {
+              this.loading = false
+              this.msg = result.status
+              this.result = result
+              this.dialogVisible = true
+              clearInterval(timer)
+            }
+          })
+          .catch(_ => {
+            this.msg = '网络错误'
+            this.loading = false
+            clearInterval(timer)
+          })
+      }, 1000)
+      this.$once('hook:beforeDestroy', () => {
+        timer && clearInterval(timer)
+      })
+    },
+    openSubmission() {
+      openWindow(`/code-submission/${this.result.id}/`)
     },
     createCodeSubmission() {
       if (!this.answer.length) {
@@ -100,15 +174,13 @@ export default {
       const data = {
         code: this.answer,
         language: this.language,
-        contest: this.$route.params.id,
+        contest: this.contest,
         problem: this.problem.id,
       }
       createCodeSubmission(data).then(
         res => {
-          this.answer = ''
           this.$message.success('提交成功')
-          // fix20200304: 修复了提交答案后提交记录需要打开
-          this.$parent.$data.dialogVisible.status = true
+          this.pollSubmission()
         },
         err => {
           this.$message.error('提交失败')

@@ -9,6 +9,10 @@ export default {
       type: Object,
       default: () => Object.create(null),
     },
+    finished: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -96,7 +100,14 @@ export default {
           </div>
         </el-card>
         {codeElement}
-        <CodeBtn disabled={this.finished} type="primary" vOn:click_native={this.createCodeFillSubmission} />
+        <el-button
+          style="margin-top:20px"
+          disabled={this.finished}
+          type="primary"
+          vOn:click_native={this.createCodeFillSubmission}
+        >
+          提交代码
+        </el-button>
       </div>
     )
   },

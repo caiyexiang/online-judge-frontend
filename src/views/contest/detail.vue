@@ -53,13 +53,15 @@
         </div>
       </div>
       <div id="right">
-        <components
-          :is="type2component[currentType]"
-          :problem="problems[currentType][currentIndex]"
-          :finished="finished"
-          @updateAnswer="updateAnswer"
-          :key="`${currentType}-${currentIndex}`"
-        />
+        <keep-alive>
+          <components
+            :is="type2component[currentType]"
+            :problem="problems[currentType][currentIndex]"
+            :finished="finished"
+            @updateAnswer="updateAnswer"
+            :key="`${currentType}-${currentIndex}`"
+          />
+        </keep-alive>
       </div>
     </main>
     <el-dialog title="公告" :visible.sync="dialogVisible.announcement" width="80%">
@@ -419,7 +421,7 @@ export default {
     #right {
       box-sizing: border-box;
       height: calc(100vh - 60px);
-      width: 80%;
+      flex: 1;
       overflow-y: auto;
       overflow-x: hidden;
       padding: 20px;
