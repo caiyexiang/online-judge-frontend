@@ -84,6 +84,11 @@ export const constantRoutes = [
     component: () => import('@/views/error-page/404'),
     hidden: true,
   },
+  {
+    path: '/403',
+    component: () => import('@/views/error-page/403'),
+    hidden: true,
+  },
 ]
 
 const createRouter = () =>

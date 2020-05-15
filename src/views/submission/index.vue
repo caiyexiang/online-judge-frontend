@@ -78,9 +78,13 @@ export default {
   },
   methods: {
     getSubmission() {
-      this.fetchApi(this.id).then(res => {
-        this.result = res
-      })
+      this.fetchApi(this.id)
+        .then(res => {
+          this.result = res
+        })
+        .catch(err => {
+          this.$router.replace('/403')
+        })
     },
     handleCopy(text, event) {
       clip(text, event)
