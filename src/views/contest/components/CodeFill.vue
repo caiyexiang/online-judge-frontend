@@ -173,6 +173,7 @@ export default {
         <el-button
           style="margin-top:20px"
           disabled={this.finished}
+          loading={this.loading}
           type="primary"
           vOn:click={this.createCodeFillSubmission}
         >
