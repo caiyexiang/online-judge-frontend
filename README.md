@@ -35,8 +35,7 @@ VUE_APP_HOST_URL=https://example.com/ # 提供主站和Admin的跳转
 
 ## TODO
 
-- [ ] 本地缓存需要清除逻辑 / 别的用户登陆后清除前一个用户的本地缓存
-- [ ] 编程题的轮询结果需要扩展到代码补全题 / 轮询最好改成 websocket
+- [ ] 轮询代码题结果返回最好改成 websocket 回传
 - [ ] 集成 websocket
 - [ ] 填充数据可视化
 - [ ] 编写单元测试

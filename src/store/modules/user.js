@@ -1,5 +1,6 @@
 import { login, logout, getInfo } from '@/api/user'
 import { setUserid, getUserid } from '@/utils/auth'
+import { clearLocalStorage } from '@/utils/storage'
 import { resetRouter } from '@/router'
 
 const state = {
@@ -37,6 +38,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       login({ username, password })
         .then(response => {
+          clearLocalStorage()
           setUserid(response.id)
           commit('SET_USERID', response.id)
           resolve(response)
