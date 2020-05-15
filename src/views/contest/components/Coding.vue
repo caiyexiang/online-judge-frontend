@@ -76,12 +76,10 @@ import openWindow from '@/utils/open-window'
 import { mapGetters } from 'vuex'
 import { getCodeSubmissions } from '@/api/contest'
 import CodeMirror from '@/components/CodeMirror'
-import CodeBtn from './CodeBtn'
 import { createCodeSubmission } from '@/api/contest'
 export default {
   components: {
     CodeMirror,
-    CodeBtn,
   },
   props: {
     problem: {

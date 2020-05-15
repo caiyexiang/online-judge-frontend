@@ -1,7 +1,6 @@
 <script>
 import CodeMirror from '@/components/CodeMirror'
 import { createCodeFillSubmission } from '@/api/contest'
-import CodeBtn from './CodeBtn'
 import { fillRegEx } from '@/utils/constant'
 export default {
   props: {
@@ -17,19 +16,14 @@ export default {
   data() {
     return {
       answer: [...this.problem.answer],
+      contest: parseInt(this.$route.params.id),
     }
   },
   components: {
     CodeMirror,
-    CodeBtn,
-  },
-  computed: {
-    contest() {
-      return this.$route.params.id
-    },
   },
   methods: {
-    async createCodeFillSubmission() {
+    createCodeFillSubmission() {
       if (this.answer.length === 0) {
         this.$message.error('代码为空')
         return
@@ -40,13 +34,14 @@ export default {
         contest: this.contest,
         problem: this.problem.id,
       }
-      try {
-        await createCodeFillSubmission(data)
-        this.$message.success('提交成功')
-      } catch (e) {
-        this.$message.error('提交失败')
-        console.error(e)
-      }
+      createCodeFillSubmission(data)
+        .then(_ => {
+          this.$message.success('提交成功')
+        })
+        .catch(e => {
+          this.$message.error('提交失败')
+          console.error(e)
+        })
     },
     updateAnswer() {
       this.$emit('updateAnswer', this.answer)
@@ -55,15 +50,14 @@ export default {
   render() {
     const codeTemplateList = this.problem.code_template.split(fillRegEx)
     const codeElement = []
-    const scoreElement = () => {
-      if (this.problem.score !== undefined) {
-        return (
-          <span>
-            <el-tag>得分: {this.problem.score}</el-tag>
-          </span>
-        )
-      }
-    }
+    const scoreElement =
+      this.problem.score !== undefined ? (
+        <span>
+          <el-tag>得分: {this.problem.score}</el-tag>
+        </span>
+      ) : (
+        undefined
+      )
     for (let i = 0; i < codeTemplateList.length; i++) {
       codeElement.push(
         <CodeMirror
@@ -89,7 +83,7 @@ export default {
     return (
       <div>
         <h3>
-          {scoreElement()}【{this.problem.maxScore}分】{this.problem.index + 1}. {this.problem.title}
+          {scoreElement}【{this.problem.maxScore}分】{this.problem.index + 1}. {this.problem.title}
         </h3>
         <el-card shadow="never">
           <div slot="header">
