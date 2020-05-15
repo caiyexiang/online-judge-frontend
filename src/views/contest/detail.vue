@@ -100,6 +100,7 @@ const type2component = {
   [QA]: 'Qa',
   [CHOICE]: 'Choice',
   [FILLIN]: 'FillIn',
+  default: 'div',
 }
 const getSubmission = {
   [CODING]: getCodeSubmission,
@@ -130,8 +131,9 @@ export default {
         status: false,
         announcement: false,
       },
-      problems: getDefaultProblem(),
-      currentType: CODING,
+      // tricky做法，设置default组件为div，可以防止首屏题目答案不刷新
+      problems: { ...getDefaultProblem(), default: [] },
+      currentType: 'default',
       currentIndex: 0,
       contest: {
         title: '',
@@ -142,8 +144,7 @@ export default {
       submission: [],
       localAnswer: getDefaultProblem(),
       score: [],
-      // 决定题目顺序，这里是选择/填空/问答/代码补全/代码
-      // 1 2 3 4 0
+      // 决定侧边栏的题目按钮顺序，这里是选择/填空/问答/代码补全/代码
       types: [CHOICE, FILLIN, QA, CODEFILL, CODING],
       PROBLEM_TYPE_CN,
       type2component,
@@ -156,14 +157,6 @@ export default {
       await this.checkContestSubmission()
       await this.getContest()
       this.loading = false
-      this.currentIndex = 0
-      // 选取非空的题目数组类型当currentType
-      for (const type of this.types) {
-        if (this.problems[type].length > 0) {
-          this.currentType = type
-          break
-        }
-      }
     } catch (e) {
       this.loading = false
       this.$message.error('获取数据错误')
@@ -229,10 +222,18 @@ export default {
       this.contest = { title, now_time, end_time, description }
       this.startTimer()
       this.checkLocalStorage()
+      let firstFlag = true
+      let firstIndex = 0
+      let firstType = 0
       for (const type of this.types) {
         for (let index = 0; index < problem_json[type].length; index++) {
           const problem = problem_json[type][index]
           // 如果问题被删除, 从数组中移除这个问题，并且index自减
+          if (firstFlag) {
+            firstIndex = index
+            firstType = type
+            firstFlag = false
+          }
           if (problem.deleted) {
             problem_json[type].splice(index, 1)
             problem = null
@@ -283,6 +284,8 @@ export default {
           }
         }
       }
+      this.currentIndex = firstIndex
+      this.currentType = firstType
       this.problems = problem_json
     },
     plainState(type, index) {
