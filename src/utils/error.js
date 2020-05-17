@@ -1,5 +1,5 @@
 export class FormError extends Error {
-  constructor (data) {
+  constructor(data) {
     super('FormError')
     this.data = data
   }

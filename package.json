@@ -7,8 +7,9 @@
     "build": "vue-cli-service build",
     "preview": "node build/index.js --preview",
     "test:unit": "jest --clearCache && vue-cli-service test:unit",
-    "lint": "vue-cli-service lint",
-    "commit": "git-cz"
+    "lint": "vue-cli-service -fix lint",
+    "commit": "git-cz",
+    "format": "prettier --write \"**/*.{js,css,md}\""
   },
   "dependencies": {
     "axios": "^0.19.2",

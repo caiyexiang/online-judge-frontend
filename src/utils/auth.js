@@ -1,4 +1,4 @@
-import {setLocalStorage, getLocalStorage, removeLocalStorage} from './storage'
+import { setLocalStorage, getLocalStorage, removeLocalStorage } from './storage'
 
 export function getUserid() {
   return getLocalStorage('userid')

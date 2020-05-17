@@ -3,57 +3,54 @@ module.exports = {
   env: {
     browser: true,
     node: true,
-    es6: true
+    es6: true,
   },
-  extends: ["plugin:vue/recommonded", "eslint:recommended", "@vue/prettier"],
+  extends: ['plugin:vue/recommonded', 'eslint:recommended', '@vue/prettier'],
   parserOptions: {
-    parser: "babel-eslint"
+    parser: 'babel-eslint',
   },
   rules: {
-    "vue/max-attributes-per-line": [
-      "error",
+    'vue/max-attributes-per-line': [
+      'error',
       {
         singleline: 10,
         multiline: {
           max: 1,
-          allowFirstLine: false
-        }
-      }
+          allowFirstLine: false,
+        },
+      },
     ],
     quotes: [
-      "error",
-      "single",
+      'error',
+      'single',
       {
         avoidEscape: true,
-        allowTemplateLiterals: true
-      }
+        allowTemplateLiterals: true,
+      },
     ],
-    semi: ["error", "never"],
-    "no-irregular-whitespace": [
-      "error",
+    semi: ['error', 'never'],
+    'no-irregular-whitespace': [
+      'error',
       {
         skipComments: true,
-        skipTemplates: true
-      }
+        skipTemplates: true,
+      },
     ],
-    "no-unused-vars": ["warn"],
-    "arrow-spacing": [
-      "error",
+    'no-unused-vars': ['warn'],
+    'arrow-spacing': [
+      'error',
       {
         before: true,
-        after: true
-      }
-    ]
+        after: true,
+      },
+    ],
   },
   overrides: [
     {
-      files: [
-        "**/__tests__/*.{j,t}s?(x)",
-        "**/tests/unit/**/*.spec.{j,t}s?(x)"
-      ],
+      files: ['**/__tests__/*.{j,t}s?(x)', '**/tests/unit/**/*.spec.{j,t}s?(x)'],
       env: {
-        jest: true
-      }
-    }
-  ]
-};
+        jest: true,
+      },
+    },
+  ],
+}
