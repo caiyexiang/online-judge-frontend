@@ -66,7 +66,7 @@
     </main>
     <el-dialog title="公告" :visible.sync="dialogVisible.announcement" width="80%">
       <div>
-        {{ contest.description }}
+        {{ contest.description || "暂无公告"}}
       </div>
     </el-dialog>
     <div v-if="dialogVisible.status">
@@ -302,15 +302,7 @@ export default {
       this.currentIndex++
     },
     handleBack() {
-      this.$confirm('确定退出本次测验？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
-      })
-        .then(() => {
           this.$router.go(-1)
-        })
-        .catch()
     },
     async submitSubmission() {
       try {

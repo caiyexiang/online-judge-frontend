@@ -158,6 +158,7 @@ export default {
     }
     return (
       <div>
+      <el-card>
         <h3>
           {scoreElement}【{this.problem.maxScore}分】{this.problem.index + 1}. {this.problem.title}
         </h3>
@@ -181,6 +182,7 @@ export default {
         </el-button>
         {statusButton}
         {resultButton}
+        </el-card>
       </div>
     )
   },

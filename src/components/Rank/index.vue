@@ -13,7 +13,7 @@
         size="small"
         :key="1"
       >
-        <el-table-column align="center" label="你的排名" prop="rank" width="80" />
+        <el-table-column align="center" label="我的排名" prop="rank" width="80" />
         <el-table-column align="center" label="用户名" prop="user.username" width="120" />
         <el-table-column align="center" label="总分数" prop="score" width="80" />
         <el-table-column align="center" label="总用时" prop="penalty" width="100">

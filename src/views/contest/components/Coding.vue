@@ -1,73 +1,109 @@
 <template>
   <div @click.capture="resultDrawerVisible = false">
-    <h3>
-      <span v-if="problem.score !== undefined">
-        <el-tag>得分: {{ problem.score }}</el-tag> </span
-      >【{{ problem.maxScore }}分】{{ problem.index + 1 }}. {{ problem.title }}
-    </h3>
-    <el-card shadow="never">
-      <div slot="header">
-        <span>题目描述</span>
-      </div>
+    <el-card>
+      <h3>
+        <span v-if="problem.score !== undefined">
+          <el-tag>得分: {{ problem.score }}</el-tag>
+        </span>【{{ problem.maxScore }}分】{{ problem.index + 1 }}. {{ problem.title }}
+      </h3>
       <div>
-        <p v-html="problem.description" />
+        <p class='title'>题目描述</p>
+        <p
+          class="describetion"
+          v-html="problem.description"
+        />
+
+        <p class='title'>输入</p>
+        <p
+          class="describetion"
+          v-html="problem.input"
+        />
+        <p class='title'>输出</p>
+        <p
+          class="describetion"
+          v-html="problem.output"
+        />
+      </div>
+      <el-row>
+        <el-col :span='11'>
+          <span class='title'>示例输入
+            <a
+              class="copy"
+              v-clipboard:copy="problem.sample_input_json.join('')"
+              v-clipboard:success="onCopy"
+              v-clipboard:error="onCopyError"
+            >
+              <i class="el-icon-document-copy"></i>
+              <span>{{"<-点我复制"}}</span>
+            </a>
+          </span>
+          <div class="text-wrapper">
+            <el-input
+              type="textarea"
+              spellcheck="false"
+              :value="problem.sample_input_json | sampleFilter"
+              :autosize='{minRows: 5, maxRows: 10}'
+              style="font-family:'Consolas';background-color:none repeat scroll 0 0 #8DB8FF;"
+              resize='none'
+            >
+            </el-input>
+          </div>
+        </el-col>
+        <el-col
+          :span='12'
+          :offset="1"
+        >
+          <span class='title'>示例输出</span>
+          <div class="text-wrapper">
+            <el-input
+              type="textarea"
+              spellcheck="false"
+              :value="problem.sample_output_json| sampleFilter"
+              :autosize='{minRows: 5, maxRows: 10}'
+              style="font-family:'Consolas';background-color:none repeat scroll 0 0 #8DB8FF;"
+              resize='none'
+            >
+            </el-input>
+          </div>
+        </el-col>
+      </el-row>
+      <div v-if='problem.hint!==""'>
+        <p class='title'>提示</p>
+        <p
+          class="describetion"
+          v-html="problem.hint"
+        />
       </div>
     </el-card>
-    <el-card shadow="never">
-      <div slot="header">
-        <span>提示</span>
-      </div>
-      <div class="text-wrapper">
-        <p v-html="problem.hint" />
-      </div>
+    <el-card>
+      <CodeMirror
+        v-model="answer"
+        :language.sync="language"
+        @updateValue="updateAnswer"
+      />
+      <el-button
+        @click="createCodeSubmission"
+        :disabled="finished"
+        type="primary"
+        style="margin-top:20px"
+        :loading="loading"
+        size="medium"
+      >提交代码</el-button>
+      <el-button
+        :type="msgType"
+        plain
+        v-show="msg"
+      >
+        {{ msg }}
+      </el-button>
+      <el-button
+        type="primary"
+        v-show="result"
+        @click="openSubmission"
+      >
+        查看结果
+      </el-button>
     </el-card>
-    <el-card shadow="never">
-      <div slot="header">
-        <span>输入</span>
-      </div>
-      <div class="text-wrapper">
-        <p v-html="problem.input" />
-      </div>
-    </el-card>
-    <el-card shadow="never">
-      <div slot="header">
-        <span>输出</span>
-      </div>
-      <div class="text-wrapper">
-        <p v-html="problem.output" />
-      </div>
-    </el-card>
-    <el-card shadow="never">
-      <div slot="header">
-        <span>示例输入</span>
-      </div>
-      <div class="text-wrapper">
-        <pre>{{ problem.sample_input_json | sampleFilter }}</pre>
-      </div>
-    </el-card>
-    <el-card shadow="never">
-      <div slot="header">
-        <span>示例输出</span>
-      </div>
-      <div class="text-wrapper">
-        <pre>{{ problem.sample_output_json | sampleFilter }}</pre>
-      </div>
-    </el-card>
-    <CodeMirror v-model="answer" :language.sync="language" @updateValue="updateAnswer" />
-    <el-button
-      @click="createCodeSubmission"
-      :disabled="finished"
-      type="primary"
-      style="margin-top:20px"
-      :loading="loading"
-      >提交代码</el-button
-    >
-    <el-button :type="msgType" plain v-show="msg">
-      {{ msg }}
-    </el-button>
-    <el-button type="primary" v-show="result" @click="openSubmission">
-      查看结果
-    </el-button>
   </div>
 </template>
 
@@ -186,6 +222,15 @@ export default {
         },
       )
     },
+    onCopy(event) {
+      this.$message({
+        message: 'Code copied',
+        type: 'success'
+      });
+    },
+    onCopyError(e) {
+      this.$message.error('Failed to copy code');
+    }
   },
 }
 </script>
@@ -193,5 +238,16 @@ export default {
 <style lang="scss" scoped>
 .el-card {
   margin-bottom: 10px;
+}
+.title {
+  font-size: 20px;
+  font-weight: 400;
+  margin: 25px 0 8px 0;
+  color: #3091f2;
+}
+p.describetion {
+  margin-left: 25px;
+  margin-right: 20px;
+  font-size: 15px;
 }
 </style>

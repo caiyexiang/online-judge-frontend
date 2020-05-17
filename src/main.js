@@ -6,6 +6,8 @@ import 'normalize.css/normalize.css' // normalize css
 import './plugins/element.js'
 import './styles/index.scss' // global css
 import './permission' // permission control
+import Clipboard from 'v-clipboard'
+Vue.use(Clipboard)
 
 Vue.config.productionTip = false
 

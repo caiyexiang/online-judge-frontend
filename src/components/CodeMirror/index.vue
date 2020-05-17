@@ -1,18 +1,50 @@
 <template>
   <div>
     <div>
-      <el-select
-        v-if="showLanguage"
-        :value="language"
-        placeholder="请选择编程语言"
-        @change="onLangChange"
-        :disabled="disableLanguage"
-        size="mini"
-      >
-        <el-option v-for="item in languages" :key="item" :value="item"> </el-option>
-      </el-select>
+      <el-row v-if="showLanguage">
+        <el-col :span='8'>
+          <span>语言: </span>
+          <el-select
+            :value="language"
+            placeholder="请选择编程语言"
+            @change="onLangChange"
+            :disabled="disableLanguage"
+            size="small"
+          >
+            <el-option
+              v-for="item in languages"
+              :key="item"
+              :value="item"
+            > </el-option>
+          </el-select>
+        </el-col>
+        <el-col
+          :span='8'
+          :offset='8'
+        >
+          <span>主题: </span>
+          <el-select
+            :value="theme"
+            @change="onThemeChange"
+            class="adjust"
+            size="small"
+          >
+            <el-option
+              v-for="item in themes"
+              :key="item.label"
+              :value="item.value"
+            >{{item.label}}
+            </el-option>
+          </el-select>
+        </el-col>
+      </el-row>
     </div>
-    <codemirror ref="myEditor" :value="value" :options="options" style:="margin-top: 10px" @change="onEditorCodeChange"
+    <codemirror
+      ref="myEditor"
+      :value="value"
+      :options="options"
+      style:="margin-top: 10px"
+      @change="onEditorCodeChange"
     />
   </div>
 </template>
@@ -60,7 +92,7 @@ export default {
     },
     theme: {
       type: String,
-      default: 'material',
+      default: 'solarized',
     },
     readOnly: {
       type: Boolean,
@@ -85,7 +117,7 @@ export default {
         // codemirror options
         tabSize: 4,
         mode: 'text/x-csrc',
-        theme: 'material',
+        theme: 'solarized',
         lineNumbers: true,
         lang: 'c',
         line: true,
@@ -107,6 +139,7 @@ export default {
       themes: [
         { label: 'Solarized Light', value: 'solarized' },
         { label: 'Material', value: 'material' },
+        { label: 'Monokai', value: 'monokai' }
       ],
     }
   },
@@ -129,14 +162,22 @@ export default {
       this.$emit('update:value', value)
       this.$emit('updateValue', value)
     },
+    onThemeChange(newTheme) {
+      console.log(newTheme)
+      this.theme = newTheme
+      this.editor.setOption('theme', newTheme)
+      this.$emit('changeTheme', newTheme)
+    },
     onLangChange(value) {
       this.editor.setOption('mode', this.mode[value])
       this.$emit('update:language', value)
     },
-    onThemeChange(value) {
-      this.editor.setOption('theme', value)
-    },
   },
+  watch: {
+    'theme'(newVal, oldVal) {
+      this.editor.setOption('theme', newVal)
+    }
+  }
 }
 </script>
 
